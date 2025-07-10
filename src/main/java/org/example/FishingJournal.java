@@ -17,9 +17,12 @@ public class FishingJournal {
         System.out.println("Конструктор инициализирован, trips = " + trips);
     }
 
-    public FishingTrip addTrip(String date, FishingLocation location, String weatherConditions, double duration,
+    public FishingTrip addTrip(String date, FishingLocation location, String weatherConditions, double temperature,
+                               int windSpeed, int pressure, double duration,
                                FishingGear gear, Bait bait) {
-        FishingTrip trip = new FishingTrip(date, location, weatherConditions, duration, gear, bait, new ArrayList<>());
+        FishingTrip trip = new FishingTrip(date, location, weatherConditions,
+                temperature, windSpeed, pressure,
+                duration, gear, bait);
         trips.add(trip);
         return trip;
     }
