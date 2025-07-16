@@ -2,10 +2,10 @@ import org.example.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FishingJournalFilterTest {
     private FishingJournal journal;
@@ -76,5 +76,64 @@ public class FishingJournalFilterTest {
     void testEmptyLocationFilter() {
         List<FishingTrip> emptyFilter = journal.filterByLocation("");
         assertTrue(emptyFilter.isEmpty());
+    }
+
+    @Test
+    void testEdgeDateCases() {
+        // Фильтр с граничными датами
+        List<FishingTrip> edgeCase = journal.filterByDateRange("2023-07-22", "2023-07-22");
+        assertEquals(1, edgeCase.size());
+        assertEquals("2023-07-22", edgeCase.get(0).getDate());
+    }
+
+
+    @Test
+    void testNullParameters() {
+        List<FishingTrip> nullLocation = journal.filterByLocation(null);
+        assertTrue(nullLocation.isEmpty());
+
+        List<FishingTrip> nullDate = journal.filterByDateRange(null, "2023-07-31");
+        assertTrue(nullDate.isEmpty());
+    }
+
+    @Test
+    void testNonExistentLocation() {
+        List<FishingTrip> noMatch = journal.filterByLocation("Море");
+        assertTrue(noMatch.isEmpty());
+    }
+    @Test
+    void testCatchRecordCreation() {
+        FishSpecies species = new FishSpecies("Щука", "Хищная", 0.5, 15.0);
+        CatchRecord record = new CatchRecord(species, 3.2, 65.0);
+
+        assertEquals(species, record.getSpecies());
+        assertEquals(3.2, record.getWeight(), 0.001);
+        assertEquals(65.0, record.getLength(), 0.001);
+    }
+
+    @Test
+    void testFishermanProperties() {
+        Fisherman fisherman = new Fisherman("Иван", "Сидоров", "ivan_angler");
+
+        assertEquals("Иван", fisherman.getFirstName());
+        assertEquals("Сидоров", fisherman.getLastName());
+        assertEquals("ivan_angler", fisherman.getUsername());
+    }
+
+
+    @Test
+    void testFishSpeciesProperties() {
+        FishSpecies species = new FishSpecies("Щука", "Хищная", 0.5, 15.0);
+
+        assertEquals("Щука", species.getName());
+        assertEquals("Хищная", species.getDescription());
+        assertEquals(0.5, species.getMinWeight(), 0.001);
+        assertEquals(15.0, species.getMaxWeight(), 0.001);
+    }
+
+    @Test
+    void testInvalidWeights() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new FishSpecies("Щука", "Хищная", -1.0, 15.0));
     }
 }
