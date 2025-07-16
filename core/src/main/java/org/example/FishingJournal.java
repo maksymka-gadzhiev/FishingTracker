@@ -1,6 +1,7 @@
 package org.example;
 
 
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,9 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
-
 public class FishingJournal {
-    private static final Logger logger = LoggerFactory.getLogger(FishingJournal.class);
+    public static Logger logger = LoggerFactory.getLogger(FishingJournal.class);
     private Fisherman fisherman;
     private List<FishingTrip> trips;
     private Map<Bait, Map<FishSpecies, Integer>> baitEffectiveness;
@@ -23,6 +23,11 @@ public class FishingJournal {
         this.fisherman = fisherman;
         this.baitEffectiveness = new HashMap<>();
         logger.debug("Конструктор инициализирован, trips = {}", trips);
+    }
+
+    public FishingJournal() {
+        this.trips = new ArrayList<>();
+        this.baitEffectiveness = new HashMap<>();
     }
 
     public FishingTrip addTrip(String date, FishingLocation location, String weatherConditions, double temperature,
@@ -192,5 +197,7 @@ public class FishingJournal {
         return new ArrayList<>(trips);
     }
 
-
+    public Map<Bait, Map<FishSpecies, Integer>> getBaitEffectiveness() {
+        return baitEffectiveness;
+    }
 }
