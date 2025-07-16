@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -43,6 +44,20 @@ public class FishingTrip {
 
     public int getTotalFish() {
         return catches.size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FishingTrip that = (FishingTrip) o;
+        return Objects.equals(date, that.date) &&
+                Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, location);
     }
 
 }

@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         // Описание задачи:
@@ -49,6 +51,15 @@ public class Main {
 
         System.out.println("\n=== Эффективность приманок ===");
         journal.printBaitEffectiveness();
+
+        System.out.println("\n=== Фильтрация по месту 'Озеро' ===");
+        List<FishingTrip> lakeTrips = journal.filterByLocation("Озеро");
+        lakeTrips.forEach(trip -> journal.printTripReport(trip));
+
+        System.out.println("\n=== Фильтрация по датам 2023-07-01 - 2023-07-31 ===");
+        List<FishingTrip> julyTrips = journal.filterByDateRange("2023-07-01", "2023-07-31");
+        julyTrips.forEach(trip -> journal.printTripReport(trip));
     }
+
 
 }

@@ -1,15 +1,19 @@
 package org.example;
 
 
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 public class FishingJournal {
-    private static final Logger logger = LoggerFactory.getLogger(FishingJournal.class);
+    public static Logger logger = LoggerFactory.getLogger(FishingJournal.class);
     private Fisherman fisherman;
     private List<FishingTrip> trips;
     private Map<Bait, Map<FishSpecies, Integer>> baitEffectiveness;
@@ -19,6 +23,11 @@ public class FishingJournal {
         this.fisherman = fisherman;
         this.baitEffectiveness = new HashMap<>();
         logger.debug("Конструктор инициализирован, trips = {}", trips);
+    }
+
+    public FishingJournal() {
+        this.trips = new ArrayList<>();
+        this.baitEffectiveness = new HashMap<>();
     }
 
     public FishingTrip addTrip(String date, FishingLocation location, String weatherConditions, double temperature,
@@ -142,9 +151,53 @@ public class FishingJournal {
         });
     }
 
+    public List<FishingTrip> filterByLocation(String locationName) {
+        if (locationName == null || locationName.isBlank()) {
+            logger.warn("Пустой параметр locationName");
+            return new ArrayList<>();
+        }
+
+        String searchTerm = locationName.toLowerCase();
+        return trips.stream()
+                .filter(trip -> trip.getLocation().getName().toLowerCase().contains(searchTerm))
+                .collect(Collectors.toList());
+    }
+
+    public List<FishingTrip> filterByDateRange(String startDate, String endDate) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+
+            if (start.isAfter(end)) {
+                logger.warn("Начальная дата {} позже конечной {}", startDate, endDate);
+                return new ArrayList<>();
+            }
+
+            return trips.stream()
+                    .filter(trip -> {
+                        LocalDate tripDate = LocalDate.parse(trip.getDate(), formatter);
+                        return !tripDate.isBefore(start) && !tripDate.isAfter(end);
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Ошибка парсинга даты: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    public List<FishingTrip> filterByLocationAndDate(String locationName, String startDate, String endDate) {
+        List<FishingTrip> locationFiltered = filterByLocation(locationName);
+        List<FishingTrip> dateFiltered = filterByDateRange(startDate, endDate);
+
+        return locationFiltered.stream()
+                .filter(dateFiltered::contains)
+                .collect(Collectors.toList());
+    }
     public List<FishingTrip> getTrips() {
         return new ArrayList<>(trips);
     }
 
-
+    public Map<Bait, Map<FishSpecies, Integer>> getBaitEffectiveness() {
+        return baitEffectiveness;
+    }
 }
