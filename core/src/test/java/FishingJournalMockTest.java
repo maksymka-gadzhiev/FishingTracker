@@ -60,6 +60,23 @@ public class FishingJournalMockTest {
     }
 
     @Test
+    void testPrintTripReportLogsCorrectly() {
+
+        FishingLocation location = new FishingLocation("Озеро Глубокое", "Пресное озеро");
+        FishingGear gear = new FishingGear("Удочка", "Бренд", "Характеристики");
+        Bait bait = new Bait("Червь", "Натуральная", "Красный");
+        FishingTrip trip = new FishingTrip("2023-07-15", location, "Солнечно", 25.0, 5, 760, 4.5, gear, bait);
+        trip.addCatch(new CatchRecord(new FishSpecies("Щука", "Хищная", 0.5, 15.0), 2.5, 60));
+        trip.addCatch(new CatchRecord(new FishSpecies("Карп", "Пресноводная", 1.0, 20.0), 4.0, 70));
+
+        journal.printTripReport(trip);
+
+        verify(logger).info(contains("Отчет по поездке:"));
+        verify(logger).info(contains("Дата: 2023-07-15"));
+        verify(logger).info(contains("Место: Озеро Глубокое"));
+        verify(logger).info(contains("Погода: Солнечно"));
+    }
+    @Test
     void testPrintBaitEffectivenessOutputsData() {
         Bait bait1 = new Bait("Червь", "Натуральная", "Красный");
         Bait bait2 = new Bait("Мормышка", "Искусственная", "Черная");
