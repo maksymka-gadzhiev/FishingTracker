@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         // Описание задачи:
@@ -29,21 +31,13 @@ public class Main {
         FishingLocation river = new FishingLocation("Река Быстрая", "Река с течением");
 
         // Регистрация рыбалок
-        FishingTrip trip1 = journal.addTrip("2023-07-15", deepLake, "Солнечно", 4.5, spinningRod, lure);
-        FishingTrip trip2 = journal.addTrip("2023-07-22", deepLake, "Пасмурно", 6.0, spinningRod, lure);
-        FishingTrip trip3 = journal.addTrip("2023-08-05", river, "Дождь", 3.5, floatRod, worm);
+        FishingTrip trip1 = journal.addTrip("2023-07-15", deepLake, "Солнечно",
+                25, 2, 755, 4.5, spinningRod, lure);
 
         // Добавление улова
         journal.addCatch(trip1, perch, 0.45, 22.0);
         journal.addCatch(trip1, pike, 3.2, 65.0);
         journal.addCatch(trip1, perch, 0.38, 20.5);
-
-        journal.addCatch(trip2, pike, 4.1, 72.0);
-        journal.addCatch(trip2, perch, 0.42, 21.0);
-
-        journal.addCatch(trip3, bream, 1.2, 35.0);
-        journal.addCatch(trip3, bream, 0.9, 32.0);
-        journal.addCatch(trip3, perch, 0.35, 19.0);
 
         // Статистика
         System.out.println("=== Общая статистика ===");
@@ -57,6 +51,15 @@ public class Main {
 
         System.out.println("\n=== Эффективность приманок ===");
         journal.printBaitEffectiveness();
+
+        System.out.println("\n=== Фильтрация по месту 'Озеро' ===");
+        List<FishingTrip> lakeTrips = journal.filterByLocation("Озеро");
+        lakeTrips.forEach(trip -> journal.printTripReport(trip));
+
+        System.out.println("\n=== Фильтрация по датам 2023-07-01 - 2023-07-31 ===");
+        List<FishingTrip> julyTrips = journal.filterByDateRange("2023-07-01", "2023-07-31");
+        julyTrips.forEach(trip -> journal.printTripReport(trip));
     }
+
 
 }
